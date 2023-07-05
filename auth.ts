@@ -1,6 +1,5 @@
 import NextAuth, { type DefaultSession } from 'next-auth'
 import GitHub from 'next-auth/providers/github'
-import { NextResponse } from 'next/server'
 
 declare module 'next-auth' {
   interface Session {
