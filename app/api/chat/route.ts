@@ -30,7 +30,14 @@ export async function POST(req: Request) {
 
   const res = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',
-    messages,
+    messages: [
+      {
+        role: 'system',
+        content:
+          'Your are a question answering assistant used to analyze customer reviews. Answer user prompt based on the reviews given as context. If the context is not useful, says you cannot answer the question.'
+      },
+      ...messages
+    ],
     temperature: 0.7,
     stream: true
   })
@@ -48,6 +55,11 @@ export async function POST(req: Request) {
         createdAt,
         path,
         messages: [
+          {
+            role: 'system',
+            content:
+              'Your are a question answering assistant used to analyze customer reviews. Answer user prompt based on the reviews given as context. If the context is not useful, says you cannot answer the question.'
+          },
           ...messages,
           {
             content: completion,
