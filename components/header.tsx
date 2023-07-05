@@ -7,40 +7,36 @@ export function Header() {
   const pathname = usePathname()
 
   return (
-    <header className="flex justify-around p-6 bg-blue-600 text-white shadow-lg">
-      <Link href="/">
-        <div
-          className={`p-2 px-4 cursor-pointer rounded transition-colors duration-200 ease-in-out ${
-            pathname === '/'
-              ? 'bg-white text-blue-600'
-              : 'hover:bg-blue-500 hover:text-white'
-          }`}
-        >
-          Home
+    <nav className="bg-white shadow">
+      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div className="relative flex h-16 justify-between">
+          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden"></div>
+          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <Link
+                href="/"
+                className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
+                  pathname === '/'
+                    ? 'border-indigo-500 text-gray-900'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                Home
+              </Link>
+              <Link
+                href="/about"
+                className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
+                  pathname === '/about'
+                    ? 'border-indigo-500 text-gray-900'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                About
+              </Link>
+            </div>
+          </div>
         </div>
-      </Link>
-      <Link href="/reviews">
-        <div
-          className={`p-2 px-4 cursor-pointer rounded transition-colors duration-200 ease-in-out ${
-            pathname === '/reviews'
-              ? 'bg-white text-blue-600'
-              : 'hover:bg-blue-500 hover:text-white'
-          }`}
-        >
-          Reviews
-        </div>
-      </Link>
-      <Link href="/about">
-        <div
-          className={`p-2 px-4 cursor-pointer rounded transition-colors duration-200 ease-in-out ${
-            pathname === '/about'
-              ? 'bg-white text-blue-600'
-              : 'hover:bg-blue-500 hover:text-white'
-          }`}
-        >
-          About
-        </div>
-      </Link>
-    </header>
+      </div>
+    </nav>
   )
 }
