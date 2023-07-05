@@ -1,49 +1,37 @@
 const people = [
   {
+    name: 'Ismail Benaija',
+    imageUrl:
+      'https://media.licdn.com/dms/image/C5603AQFiP2gkJJ_QRQ/profile-displayphoto-shrink_800_800/0/1603033257709?e=1694044800&v=beta&t=IbFnEEcv-9xYXuqvX4XvY_hC8ZYBaSjGN16jGxmCPss',
+    role: `Data Scientist`,
+    twitterUrl: '',
+    linkedinUrl: 'https://www.linkedin.com/in/ismail-benaija-4927b71a1'
+  },
+  {
+    name: 'Félicien Cantalloube',
+    imageUrl:
+      'https://media.licdn.com/dms/image/D4E03AQHg7suABr3cNQ/profile-displayphoto-shrink_800_800/0/1669112002668?e=1694044800&v=beta&t=sDkhgftB-3Km7N5nW8IliYYEl76jxnWoAFKo9gMI6XI',
+    role: `Data Scientist`,
+    twitterUrl: '',
+    linkedinUrl: 'https://www.linkedin.com/in/f%C3%A9licien-cantalloube'
+  },
+  {
+    name: 'Timothée BOHE',
+    imageUrl:
+      'https://media.licdn.com/dms/image/C4D03AQGxy0qimC9oqQ/profile-displayphoto-shrink_400_400/0/1639590909504?e=1694044800&v=beta&t=zda3juVcC9JfoxGujFaw1c-7R1YjkIgZmZBrG1KrlZ4',
+    role: `Data Scientist`,
+    twitterUrl: '',
+    linkedinUrl: 'https://www.linkedin.com/in/timothee-bohe'
+  },
+  {
     name: 'Louis Sanna',
     imageUrl:
       'https://media.licdn.com/dms/image/C4D03AQGZPOiTncN_-w/profile-displayphoto-shrink_400_400/0/1641829552598?e=1694044800&v=beta&t=59W7oIje9Q6iPv9QNpkmB0traF3QpN2A4vuIjY5pQyM',
-    role: `Web developer the day,
-    ML engineer at night,
-    Ops when things aren't right.`,
+    role: `Developer`,
     twitterUrl: 'https://twitter.com/louis_sanna',
     linkedinUrl: 'https://www.linkedin.com/in/louis-sanna-0168363a/'
   }
 ]
-
-// export default function AboutPage() {
-//   return (
-//     <>
-//       <div className="flex flex-col items-center justify-center py-10">
-//         <div className="text-m font-bold leading-6 text-gray-900">
-//           This app was created during the summer 2023 Ekimetrics hackathon by:
-//         </div>
-//         <ul
-//           role="list"
-//           className="divide-y divide-gray-100 mt-4 justify-left flex flex-col"
-//         >
-//           {people.map(person => (
-//             <li
-//               key={person.name}
-//               className="flex gap-x-4 py-5 items-center justify-center"
-//             >
-//               <img
-//                 className="h-12 w-12 flex-none rounded-full bg-gray-50"
-//                 src={person.imageUrl}
-//                 alt=""
-//               />
-//               <div className="min-w-0">
-//                 <p className="text-sm font-semibold leading-6 text-gray-900">
-//                   {person.name}
-//                 </p>
-//               </div>
-//             </li>
-//           ))}
-//         </ul>
-//       </div>
-//     </>
-//   )
-// }
 
 export default function AboutPage() {
   return (
@@ -54,8 +42,8 @@ export default function AboutPage() {
             Meet our team
           </h2>
           <p className="mt-4 text-lg leading-8 text-gray-600">
-            We’re a dynamic group of individuals who are passionate about what
-            we do.
+            We&apos;re a passionate team using data science to power sustainable
+            business growth.
           </p>
         </div>
         <ul
@@ -74,22 +62,24 @@ export default function AboutPage() {
               </h3>
               <p className="text-sm leading-6 text-gray-600">{person.role}</p>
               <ul role="list" className="mt-6 flex justify-center gap-x-6">
-                <li>
-                  <a
-                    href={person.twitterUrl}
-                    className="text-gray-400 hover:text-gray-500"
-                  >
-                    <span className="sr-only">Twitter</span>
-                    <svg
-                      className="h-5 w-5"
-                      aria-hidden="true"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
+                {person.twitterUrl ? (
+                  <li>
+                    <a
+                      href={person.twitterUrl}
+                      className="text-gray-400 hover:text-gray-500"
                     >
-                      <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
-                    </svg>
-                  </a>
-                </li>
+                      <span className="sr-only">Twitter</span>
+                      <svg
+                        className="h-5 w-5"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
+                      </svg>
+                    </a>
+                  </li>
+                ) : null}
                 <li>
                   <a
                     href={person.linkedinUrl}
