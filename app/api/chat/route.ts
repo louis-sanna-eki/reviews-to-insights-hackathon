@@ -4,8 +4,9 @@ import { Configuration, OpenAIApi } from 'openai-edge'
 
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
+import { Client, QueryBuilder } from '@relevanceai/dataset'
 
-export const runtime = 'edge'
+// export const runtime = 'edge'
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
@@ -28,16 +29,36 @@ export async function POST(req: Request) {
     configuration.apiKey = previewToken
   }
 
+  const client = new Client({
+    endpoint: 'https://api-d7b62b.stack.tryrelevance.com'
+  })
+  const dataset = client.dataset('reviews-json')
+
+  const lastQuery = messages.slice(-1)[0].content
+  const query = QueryBuilder().vector('docs_vector_', {
+    query: lastQuery,
+    model: 'all-mpnet-base-v2'
+  })
+
+  const { results } = await dataset.search(query)
+  const context = results.map(({ docs }: any) => docs).join('\n')
+
+  const improvedMessages = [
+    {
+      role: 'system',
+      content:
+        'Your are a question answering assistant used to analyze customer reviews. Answer user prompt based on the reviews given as context. If the context is not useful, says you cannot answer the question.'
+    },
+    ...messages.filter(({ role }: any) => role !== 'system').slice(0, -1), // HACK...
+    {
+      role: 'user',
+      content: `### Context:\n\n ${context} \n ### Query:\n\n ${lastQuery}`
+    }
+  ]
+
   const res = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',
-    messages: [
-      {
-        role: 'system',
-        content:
-          'Your are a question answering assistant used to analyze customer reviews. Answer user prompt based on the reviews given as context. If the context is not useful, says you cannot answer the question.'
-      },
-      ...messages
-    ],
+    messages: improvedMessages,
     temperature: 0.7,
     stream: true
   })
@@ -55,11 +76,6 @@ export async function POST(req: Request) {
         createdAt,
         path,
         messages: [
-          {
-            role: 'system',
-            content:
-              'Your are a question answering assistant used to analyze customer reviews. Answer user prompt based on the reviews given as context. If the context is not useful, says you cannot answer the question.'
-          },
           ...messages,
           {
             content: completion,

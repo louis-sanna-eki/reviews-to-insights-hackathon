@@ -6,16 +6,12 @@ import { IconArrowRight } from '@/components/ui/icons'
 
 const exampleMessages = [
   {
-    heading: 'Make recommendations based on negative reviews',
-    message: `Make recommendations based on negative reviews.`
-  },
-  {
-    heading: 'Explain review with contradictory feedback',
-    message: `Explain review with contradictory feedback.`
-  },
-  {
     heading: 'Summarize the reviews on breakfast',
     message: 'Summarize the reviews on breakfast.'
+  },
+  {
+    heading: 'List customer complaints',
+    message: `List customer complaints.`
   }
 ]
 
