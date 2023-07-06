@@ -8,20 +8,20 @@ const people = [
     linkedinUrl: 'https://www.linkedin.com/in/ismail-benaija-4927b71a1'
   },
   {
-    name: 'Félicien Cantalloube',
-    imageUrl:
-      'https://media.licdn.com/dms/image/D4E03AQHg7suABr3cNQ/profile-displayphoto-shrink_800_800/0/1669112002668?e=1694044800&v=beta&t=sDkhgftB-3Km7N5nW8IliYYEl76jxnWoAFKo9gMI6XI',
-    role: `Data Scientist`,
-    twitterUrl: '',
-    linkedinUrl: 'https://www.linkedin.com/in/f%C3%A9licien-cantalloube'
-  },
-  {
     name: 'Timothée BOHE',
     imageUrl:
       'https://media.licdn.com/dms/image/C4D03AQGxy0qimC9oqQ/profile-displayphoto-shrink_400_400/0/1639590909504?e=1694044800&v=beta&t=zda3juVcC9JfoxGujFaw1c-7R1YjkIgZmZBrG1KrlZ4',
     role: `Data Scientist`,
     twitterUrl: '',
     linkedinUrl: 'https://www.linkedin.com/in/timothee-bohe'
+  },
+  {
+    name: 'Félicien Cantalloube',
+    imageUrl:
+      'https://media.licdn.com/dms/image/D4E03AQHg7suABr3cNQ/profile-displayphoto-shrink_800_800/0/1669112002668?e=1694044800&v=beta&t=sDkhgftB-3Km7N5nW8IliYYEl76jxnWoAFKo9gMI6XI',
+    role: `Data Scientist`,
+    twitterUrl: '',
+    linkedinUrl: 'https://www.linkedin.com/in/f%C3%A9licien-cantalloube'
   },
   {
     name: 'Louis Sanna',
