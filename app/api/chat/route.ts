@@ -1,10 +1,10 @@
-import { kv } from '@vercel/kv'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { Configuration, OpenAIApi } from 'openai-edge'
 
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
 import { Client, QueryBuilder } from '@relevanceai/dataset'
+import { Readable } from 'stream'
 
 // export const runtime = 'edge'
 
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
   })
 
   const { results } = await dataset.search(query)
-  const context = results.map(({ docs }: any) => docs).join('\n')
+  const context = results.map(({ docs }: any) => docs).join('\n\n')
 
   const improvedMessages = [
     {
@@ -63,33 +63,33 @@ export async function POST(req: Request) {
     stream: true
   })
 
-  const stream = OpenAIStream(res, {
-    async onCompletion(completion) {
-      const title = json.messages[0].content.substring(0, 100)
-      const id = json.id ?? nanoid()
-      const createdAt = Date.now()
-      const path = `/chat/${id}`
-      const payload = {
-        id,
-        title,
-        userId,
-        createdAt,
-        path,
-        messages: [
-          ...messages,
-          {
-            content: completion,
-            role: 'assistant'
-          }
-        ]
+  const stream = OpenAIStream(res)
+
+  return new StreamingTextResponse(
+    wrapStreamWithPrefix(
+      stream,
+      `### Context:\n\n ${context} \n ### Completion:\n\n `
+    )
+  )
+}
+
+function wrapStreamWithPrefix(
+  originalStream: ReadableStream<any>,
+  prefix: string
+): any {
+  let firstChunk = true
+  return new Readable({
+    async read() {
+      for await (const chunk of originalStream as any) {
+        if (firstChunk) {
+          this.push(prefix)
+          this.push(chunk)
+          firstChunk = false
+        } else {
+          this.push(chunk)
+        }
       }
-      await kv.hmset(`chat:${id}`, payload)
-      await kv.zadd(`user:chat:${userId}`, {
-        score: createdAt,
-        member: `chat:${id}`
-      })
+      this.push(null)
     }
   })
-
-  return new StreamingTextResponse(stream)
 }
