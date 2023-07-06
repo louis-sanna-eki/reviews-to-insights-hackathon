@@ -4,7 +4,7 @@ import { Configuration, OpenAIApi } from 'openai-edge'
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
 import { Client, QueryBuilder } from '@relevanceai/dataset'
-import { Readable } from 'stream'
+import { Readable, ReadableOptions } from 'stream'
 
 // export const runtime = 'edge'
 
@@ -46,8 +46,8 @@ export async function POST(req: Request) {
   const improvedMessages = [
     {
       role: 'system',
-      content:
-        'Your are a question answering assistant used to analyze customer reviews. Answer user prompt based on the reviews given as context. If the context is not useful, says you cannot answer the question.'
+      content: `Your are a question answering assistant used to analyze customer reviews.        
+        Then answer the user prompt based on the reviews. If the context is not useful, say you cannot answer the question.`
     },
     ...messages.filter(({ role }: any) => role !== 'system').slice(0, -1), // HACK...
     {
@@ -65,31 +65,5 @@ export async function POST(req: Request) {
 
   const stream = OpenAIStream(res)
 
-  return new StreamingTextResponse(
-    wrapStreamWithPrefix(
-      stream,
-      `### Context:\n\n ${context} \n ### Completion:\n\n `
-    )
-  )
-}
-
-function wrapStreamWithPrefix(
-  originalStream: ReadableStream<any>,
-  prefix: string
-): any {
-  let firstChunk = true
-  return new Readable({
-    async read() {
-      for await (const chunk of originalStream as any) {
-        if (firstChunk) {
-          this.push(prefix)
-          this.push(chunk)
-          firstChunk = false
-        } else {
-          this.push(chunk)
-        }
-      }
-      this.push(null)
-    }
-  })
+  return new StreamingTextResponse(stream)
 }
