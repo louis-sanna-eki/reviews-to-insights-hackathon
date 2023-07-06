@@ -19,9 +19,7 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
   return (
     <div className="mx-auto max-w-2xl px-4">
       <div className="rounded-lg border bg-background p-8">
-        <h1 className="mb-2 text-lg font-semibold">
-          Welcome to ReviewQ&A Chatbot!
-        </h1>
+        <h1 className="mb-2 text-lg font-semibold">Welcome to ReviewsQ&A!</h1>
         <p className="mb-2 leading-normal text-muted-foreground">
           This chatbot let&apos;s you ask questions based on customer reviews.
         </p>
