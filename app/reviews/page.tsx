@@ -9,12 +9,14 @@ import { format } from 'date-fns'
 import rawReviews from '../../data/processed/labeled-reviews.json'
 import { Listbox, Transition } from '@headlessui/react'
 import { useState, Fragment } from 'react'
+import { Label } from '@radix-ui/react-dropdown-menu'
 
 interface RawReview {
   docs: string
   rating: number
   timestamp: string
   macro_topic: string
+  sentiment: string
 }
 
 const byTopic = {} as any
@@ -33,6 +35,7 @@ interface FeaturedReview {
   rating: number
   content: string
   topic: string
+  sentiment: 'negative' | 'neutral' | 'positive'
 }
 
 interface Reviews {
@@ -48,10 +51,17 @@ function classNames(...classes: any[]) {
 
 export default function ReviewPage() {
   const [topic, setTopic] = useState({ id: '-43', name: 'All' })
+  const [sentiment, setSentiment] = useState({ id: '-43', name: 'All' })
   const reviews = processRawReviews(
-    (rawReviews as RawReview[]).filter(
-      ({ macro_topic }) => macro_topic === topic.name || topic.id === '-43'
-    )
+    (rawReviews as RawReview[])
+      .filter(
+        ({ macro_topic }) => macro_topic === topic.name || topic.id === '-43'
+      )
+      .map(raw => ({ ...raw, sentiment: getSentiment(raw.sentiment) }))
+      .filter(
+        ({ sentiment: _sentiment }) =>
+          _sentiment === sentiment.name || sentiment.id === '-43'
+      )
   )
   return (
     <div className="">
@@ -142,6 +152,20 @@ export default function ReviewPage() {
                   name: topic
                 }))
               ]}
+              label={'Topics'}
+            />
+          </div>
+          <div className="mt-4">
+            <Select
+              selected={sentiment}
+              setSelected={setSentiment}
+              options={[
+                { id: '-43', name: 'All' },
+                { id: '-1', name: 'negative' },
+                { id: '0', name: 'neutral' },
+                { id: '1', name: 'positive' }
+              ]}
+              label={'Sentiment'}
             />
           </div>
         </div>
@@ -179,7 +203,16 @@ export default function ReviewPage() {
                     className="mt-4 space-y-6 text-base italic text-gray-600"
                     dangerouslySetInnerHTML={{ __html: review.content }}
                   />
-                  <Pill text={review.topic} />
+                  <Pill
+                    text={review.topic}
+                    className={
+                      review.sentiment === 'negative'
+                        ? 'bg-red-100'
+                        : review.sentiment === 'positive'
+                        ? 'bg-green-100'
+                        : undefined
+                    }
+                  />
                 </div>
               ))}
             </div>
@@ -200,7 +233,8 @@ function processRawReviews(raws: RawReview[]) {
     rating: parseRating(review.rating),
     content: `<p>${review.docs}</p>`,
     timestamp: review.timestamp,
-    topic: review.macro_topic
+    topic: review.macro_topic,
+    sentiment: review.sentiment
   }))
 
   for (let review of raws) {
@@ -240,13 +274,13 @@ function parseRating(ratingStr: number): number {
   }
 }
 
-function Select({ selected, setSelected, options }: any) {
+function Select({ selected, setSelected, options, label }: any) {
   return (
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
         <>
           <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">
-            Topics
+            {label}
           </Listbox.Label>
           <div className="relative mt-2">
             <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -312,10 +346,33 @@ function Select({ selected, setSelected, options }: any) {
   )
 }
 
-function Pill({ text }: any) {
+function Pill({ text, className = '' }: any) {
   return (
-    <span className="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 mt-4">
+    <span
+      className={`inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 mt-4 ${className}`}
+    >
       {text}
     </span>
   )
+}
+
+function getSentiment(probsString: string): any {
+  var sentiments = ['negative', 'neutral', 'positive']
+
+  // Parse the string to a JavaScript object (array)
+  var probs = JSON.parse(probsString)
+
+  for (let i = 0; i < probs.length; i++) {
+    let maxIndex = 0
+    let maxProb = 0
+
+    for (let j = 0; j < probs[i].length; j++) {
+      if (probs[i][j] > maxProb) {
+        maxIndex = j
+        maxProb = probs[i][j]
+      }
+    }
+
+    return sentiments[maxIndex]
+  }
 }
