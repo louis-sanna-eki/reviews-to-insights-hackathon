@@ -65,5 +65,32 @@ export async function POST(req: Request) {
 
   const stream = OpenAIStream(res)
 
-  return new StreamingTextResponse(stream)
+  let firstChunk = true
+  const prefix = `### Context:\n\n ${context} \n ### Completion:\n\n`
+
+  const prefixedStream = new ReadableStream({
+    start(controller) {
+      const reader = stream.getReader()
+      const decoder = new TextDecoder('utf-8')
+      const encoder = new TextEncoder()
+
+      reader.read().then(function processText({ done, value }): any {
+        if (done) {
+          controller.close()
+          return
+        }
+
+        let chunk = decoder.decode(value)
+        if (firstChunk) {
+          chunk = prefix + chunk
+          firstChunk = false
+        }
+
+        controller.enqueue(encoder.encode(chunk))
+        return reader.read().then(processText)
+      })
+    }
+  })
+
+  return new StreamingTextResponse(prefixedStream)
 }
